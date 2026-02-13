@@ -1,5 +1,5 @@
 using Csira.DataAccess;
-using Csira.Services.Infrastructure;
+using Csira.Services.Initialization;
 using Csira.Services.Issues;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +14,7 @@ public static class ServiceCollectionExtensions
 
         services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionString));
         services.AddScoped<IIssueService, IssueService>();
-        services.AddHostedService<DatabaseInitializationHostedService>();
+        services.AddScoped<IApplicationInitializer, DatabaseInitializer>();
 
         return services;
     }

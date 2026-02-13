@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="Csira.Services\Csira.Services.csproj" />
+    <ProjectReference Include="..\Csira.Services\Csira.Services.csproj" />
   </ItemGroup>
 
 </Project>

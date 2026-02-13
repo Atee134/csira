@@ -1,4 +1,5 @@
 using Csira.Services.DependencyInjection;
+using Csira.Services.Initialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,16 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddApplicationServices(connectionString);
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var initializers = scope.ServiceProvider.GetServices<IApplicationInitializer>();
+
+    foreach (var initializer in initializers)
+    {
+        await initializer.InitializeAsync();
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
