@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Csira.Pages
+namespace Csira.Web.Pages
 {
     public class IndexModel : PageModel
     {

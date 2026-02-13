@@ -1,3 +1,5 @@
 <Solution>
-  <Project Path="Csira.csproj" />
+  <Project Path="Csira.Web.csproj" />
+  <Project Path="Csira.Services\Csira.Services.csproj" />
+  <Project Path="Csira.DataAccess\Csira.DataAccess.csproj" />
 </Solution>
