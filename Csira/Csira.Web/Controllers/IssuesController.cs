@@ -11,17 +11,23 @@ public class IssuesController(IIssueService issueService) : Controller
 
     [HttpGet("")]
     public async Task<IActionResult> Index(
-        int page = 1,
+        int pageNumber = 1,
         int pageSize = 10,
         IssueSortOption sort = IssueSortOption.CreatedAtDesc,
+        int? page = null,
         CancellationToken cancellationToken = default)
     {
+        if (page.HasValue)
+        {
+            pageNumber = page.Value;
+        }
+
         var selectedSort = Enum.IsDefined(sort) ? sort : IssueSortOption.CreatedAtDesc;
         var selectedPageSize = AllowedPageSizes.Contains(pageSize) ? pageSize : 10;
 
         var query = new IssueListQuery
         {
-            PageNumber = page,
+            PageNumber = pageNumber,
             PageSize = selectedPageSize,
             Sort = selectedSort
         };
