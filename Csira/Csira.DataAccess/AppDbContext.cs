@@ -28,6 +28,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 .HasConversion<string>()
                 .HasMaxLength(16)
                 .IsRequired();
+
+            entity.Property(x => x.CreatedAtUtc)
+                .IsRequired();
         });
     }
 }

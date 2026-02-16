@@ -6,6 +6,8 @@ public class IssueEntity
 {
     public Guid Id { get; set; }
 
+    public DateTime CreatedAtUtc { get; set; }
+
     [Required]
     [MaxLength(255)]
     public string Name { get; set; } = string.Empty;

@@ -1,22 +1,52 @@
-@model IReadOnlyList<Csira.Services.Issues.IssueDto>
+@using Csira.Services.Issues
+@model Csira.Web.Models.Issues.IssuesIndexViewModel
 @{
     ViewData["Title"] = "Issues";
 }
 
 <h1>Issues</h1>
 
+<form method="get" class="row g-3 align-items-end mt-1 mb-3">
+    <input type="hidden" name="page" value="1" />
+    <div class="col-sm-3">
+        <label class="form-label" for="pageSize">Page size</label>
+        <select class="form-select" id="pageSize" name="pageSize">
+            @foreach (var option in new[] { 10, 20, 50 })
+            {
+                <option value="@option" selected="@(Model.PageSize == option)">@option</option>
+            }
+        </select>
+    </div>
+    <div class="col-sm-4">
+        <label class="form-label" for="sort">Sort</label>
+        <select class="form-select" id="sort" name="sort">
+            <option value="@IssueSortOption.CreatedAtDesc" selected="@(Model.Sort == IssueSortOption.CreatedAtDesc)">Create date desc</option>
+            <option value="@IssueSortOption.CreatedAtAsc" selected="@(Model.Sort == IssueSortOption.CreatedAtAsc)">Create date asc</option>
+            <option value="@IssueSortOption.NameAsc" selected="@(Model.Sort == IssueSortOption.NameAsc)">Name asc</option>
+            <option value="@IssueSortOption.NameDesc" selected="@(Model.Sort == IssueSortOption.NameDesc)">Name desc</option>
+            <option value="@IssueSortOption.PriorityAsc" selected="@(Model.Sort == IssueSortOption.PriorityAsc)">Prio asc</option>
+            <option value="@IssueSortOption.PriorityDesc" selected="@(Model.Sort == IssueSortOption.PriorityDesc)">Prio desc</option>
+        </select>
+    </div>
+    <div class="col-sm-2">
+        <button type="submit" class="btn btn-primary">Apply</button>
+    </div>
+</form>
+
 <table class="table table-striped table-hover align-middle mt-4">
     <thead>
         <tr>
+            <th scope="col">Created (UTC)</th>
             <th scope="col">Name</th>
             <th scope="col">Priority</th>
             <th scope="col">Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var issue in Model)
+        @foreach (var issue in Model.Issues)
         {
             <tr>
+                <td>@issue.CreatedAtUtc.ToString("yyyy-MM-dd HH:mm")</td>
                 <td>@issue.Name</td>
                 <td>@issue.Priority</td>
                 <td>
@@ -26,3 +56,40 @@
         }
     </tbody>
 </table>
+
+<div class="d-flex justify-content-between align-items-center">
+    <span>
+        Total: @Model.TotalCount issues
+    </span>
+    <nav aria-label="Issue list pagination">
+        <ul class="pagination mb-0">
+            <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : string.Empty)">
+                <a class="page-link"
+                   asp-controller="Issues"
+                   asp-action="Index"
+                   asp-route-page="@(Model.PageNumber - 1)"
+                   asp-route-pageSize="@Model.PageSize"
+                   asp-route-sort="@Model.Sort">Previous</a>
+            </li>
+            @for (var pageNumber = 1; pageNumber <= Model.TotalPages; pageNumber++)
+            {
+                <li class="page-item @(pageNumber == Model.PageNumber ? "active" : string.Empty)">
+                    <a class="page-link"
+                       asp-controller="Issues"
+                       asp-action="Index"
+                       asp-route-page="@pageNumber"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-sort="@Model.Sort">@pageNumber</a>
+                </li>
+            }
+            <li class="page-item @(Model.PageNumber >= Model.TotalPages ? "disabled" : string.Empty)">
+                <a class="page-link"
+                   asp-controller="Issues"
+                   asp-action="Index"
+                   asp-route-page="@(Model.PageNumber + 1)"
+                   asp-route-pageSize="@Model.PageSize"
+                   asp-route-sort="@Model.Sort">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>

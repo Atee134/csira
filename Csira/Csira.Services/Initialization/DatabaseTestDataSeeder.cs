@@ -13,7 +13,19 @@ public class DatabaseTestDataSeeder(AppDbContext dbContext)
         "maple",
         "spruce",
         "cherry",
-        "apple"
+        "apple",
+        "willow",
+        "birch",
+        "walnut",
+        "cedar",
+        "elm",
+        "rowan",
+        "plum",
+        "pear",
+        "hazel",
+        "linden",
+        "fir",
+        "poplar"
     ];
 
     private static readonly string[] Plants =
@@ -23,7 +35,19 @@ public class DatabaseTestDataSeeder(AppDbContext dbContext)
         "lavender",
         "mint",
         "basil",
-        "strawberries"
+        "strawberries",
+        "cucumbers",
+        "zucchini",
+        "peppers",
+        "thyme",
+        "oregano",
+        "sage",
+        "dill",
+        "carrots",
+        "lettuce",
+        "spinach",
+        "beans",
+        "sunflowers"
     ];
 
     private static readonly string[] LawnZones =
@@ -31,7 +55,15 @@ public class DatabaseTestDataSeeder(AppDbContext dbContext)
         "front lawn",
         "back lawn",
         "side lawn",
-        "orchard edge"
+        "orchard edge",
+        "north strip",
+        "south strip",
+        "garage side",
+        "shed area",
+        "fence corner",
+        "patio edge",
+        "fruit patch border",
+        "pond path"
     ];
 
     private static readonly string[] LeafZones =
@@ -39,14 +71,37 @@ public class DatabaseTestDataSeeder(AppDbContext dbContext)
         "driveway",
         "patio",
         "garden path",
-        "fence line"
+        "fence line",
+        "tool shed entrance",
+        "compost corner",
+        "mailbox path",
+        "garage apron",
+        "rain barrel area",
+        "pergola walkway",
+        "rock garden edge",
+        "herb bed border"
     ];
 
     private static readonly IssuePriority[] Priorities = Enum.GetValues<IssuePriority>();
 
     public async Task SeedAsync(CancellationToken cancellationToken = default)
     {
-        const int targetIssueCount = 100;
+        const int targetIssueCount = 300;
+        var nowUtc = DateTime.UtcNow;
+
+        var issuesMissingCreatedAt = await dbContext.Issues
+            .Where(x => x.CreatedAtUtc == default)
+            .ToListAsync(cancellationToken);
+
+        foreach (var issue in issuesMissingCreatedAt)
+        {
+            issue.CreatedAtUtc = CreateRandomCreatedAtUtc(nowUtc);
+        }
+
+        if (issuesMissingCreatedAt.Count > 0)
+        {
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
 
         var existingIssueCount = await dbContext.Issues.CountAsync(cancellationToken);
         if (existingIssueCount >= targetIssueCount)
@@ -59,16 +114,17 @@ public class DatabaseTestDataSeeder(AppDbContext dbContext)
 
         for (var i = 0; i < issuesToCreate; i++)
         {
-            newIssues.Add(CreateRandomIssue());
+            newIssues.Add(CreateRandomIssue(nowUtc));
         }
 
         dbContext.Issues.AddRange(newIssues);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    private static IssueEntity CreateRandomIssue()
+    private static IssueEntity CreateRandomIssue(DateTime nowUtc)
     {
         var action = Random.Shared.Next(5);
+        var createdAtUtc = CreateRandomCreatedAtUtc(nowUtc);
 
         var (name, description) = action switch
         {
@@ -82,10 +138,16 @@ public class DatabaseTestDataSeeder(AppDbContext dbContext)
         return new IssueEntity
         {
             Id = Guid.NewGuid(),
+            CreatedAtUtc = createdAtUtc,
             Name = name,
             Description = description,
             Priority = Priorities[Random.Shared.Next(Priorities.Length)]
         };
+    }
+
+    private static DateTime CreateRandomCreatedAtUtc(DateTime nowUtc)
+    {
+        return nowUtc.AddMinutes(-Random.Shared.Next(0, 90 * 24 * 60 + 1));
     }
 
     private static (string Name, string Description) CreateMowLawnIssue()
