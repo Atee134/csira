@@ -1,0 +1,28 @@
+@model IReadOnlyList<Csira.Services.Issues.IssueDto>
+@{
+    ViewData["Title"] = "Issues";
+}
+
+<h1>Issues</h1>
+
+<table class="table table-striped table-hover align-middle mt-4">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Priority</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var issue in Model)
+        {
+            <tr>
+                <td>@issue.Name</td>
+                <td>@issue.Priority</td>
+                <td>
+                    <a asp-controller="Issues" asp-action="Details" asp-route-id="@issue.Id">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

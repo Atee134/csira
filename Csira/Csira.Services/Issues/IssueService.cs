@@ -7,6 +7,16 @@ namespace Csira.Services.Issues;
 
 public class IssueService(AppDbContext dbContext) : IIssueService
 {
+    public async Task<IReadOnlyList<IssueDto>> GetIssuesAsync(CancellationToken cancellationToken = default)
+    {
+        var issues = await dbContext.Issues
+            .AsNoTracking()
+            .OrderBy(x => x.Name)
+            .ToListAsync(cancellationToken);
+
+        return issues.Select(MapIssue).ToList();
+    }
+
     public async Task<IssueDto?> GetIssueByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var issue = await dbContext.Issues
@@ -18,6 +28,11 @@ public class IssueService(AppDbContext dbContext) : IIssueService
             return null;
         }
 
+        return MapIssue(issue);
+    }
+
+    private static IssueDto MapIssue(IssueEntity issue)
+    {
         return new IssueDto
         {
             Id = issue.Id,

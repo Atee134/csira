@@ -14,6 +14,7 @@ public static class ServiceCollectionExtensions
 
         services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionString));
         services.AddScoped<IIssueService, IssueService>();
+        services.AddScoped<DatabaseTestDataSeeder>();
         services.AddScoped<IApplicationInitializer, DatabaseInitializer>();
 
         return services;

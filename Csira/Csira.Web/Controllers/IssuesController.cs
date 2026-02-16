@@ -6,6 +6,13 @@ namespace Csira.Web.Controllers;
 [Route("issues")]
 public class IssuesController(IIssueService issueService) : Controller
 {
+    [HttpGet("")]
+    public async Task<IActionResult> Index(CancellationToken cancellationToken)
+    {
+        var issues = await issueService.GetIssuesAsync(cancellationToken);
+        return View(issues);
+    }
+
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> Details(Guid id, CancellationToken cancellationToken)
     {

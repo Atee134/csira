@@ -44,15 +44,6 @@ namespace Csira.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Issues", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("e89e4a8f-7bea-4db4-b8f5-7a13df7c7d01"),
-                            Description = "Create a 3-layer architecture with Razor Pages web layer, service layer DTO mapping, and EF Core data access layer.",
-                            Name = "Set up initial Jira-like issue tracker scaffold",
-                            Priority = "Medium"
-                        });
                 });
 #pragma warning restore 612, 618
         }

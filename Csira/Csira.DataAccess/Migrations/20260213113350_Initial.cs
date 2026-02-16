@@ -24,11 +24,6 @@ namespace Csira.DataAccess.Migrations
                 {
                     table.PrimaryKey("PK_Issues", x => x.Id);
                 });
-
-            migrationBuilder.InsertData(
-                table: "Issues",
-                columns: new[] { "Id", "Description", "Name", "Priority" },
-                values: new object[] { new Guid("e89e4a8f-7bea-4db4-b8f5-7a13df7c7d01"), "Create a 3-layer architecture with Razor Pages web layer, service layer DTO mapping, and EF Core data access layer.", "Set up initial Jira-like issue tracker scaffold", "Medium" });
         }
 
         /// <inheritdoc />

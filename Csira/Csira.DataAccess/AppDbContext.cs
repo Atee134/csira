@@ -5,8 +5,6 @@ namespace Csira.DataAccess;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-    public static Guid SeedIssueId => Guid.Parse("e89e4a8f-7bea-4db4-b8f5-7a13df7c7d01");
-
     public DbSet<IssueEntity> Issues => Set<IssueEntity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -30,14 +28,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 .HasConversion<string>()
                 .HasMaxLength(16)
                 .IsRequired();
-
-            entity.HasData(new IssueEntity
-            {
-                Id = SeedIssueId,
-                Name = "Set up initial Jira-like issue tracker scaffold",
-                Description = "Create a 3-layer architecture with Razor Pages web layer, service layer DTO mapping, and EF Core data access layer.",
-                Priority = IssuePriority.Medium
-            });
         });
     }
 }
