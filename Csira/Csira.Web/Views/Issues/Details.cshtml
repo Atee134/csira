@@ -3,11 +3,24 @@
     ViewData["Title"] = "Issue Details";
 }
 
+<div id="issue-details-app">
 <h1>@Model.Name</h1>
 
-<p>
-    <a asp-controller="Issues" asp-action="Index">Back to issues</a>
-</p>
+<div class="d-flex gap-2 mb-3">
+    <a asp-controller="Issues" asp-action="Index" class="btn btn-outline-secondary">Back to issues</a>
+    <form method="post"
+          asp-controller="Issues"
+          asp-action="Delete"
+          asp-route-id="@Model.Id"
+          class="d-inline">
+        <button type="button"
+                class="btn btn-danger"
+                v-on:click="openDeleteConfirm"
+                data-issue-name="@Model.Name">
+            Delete
+        </button>
+    </form>
+</div>
 
 <dl class="row mt-4">
     <dt class="col-sm-2">Created (UTC)</dt>
@@ -22,3 +35,31 @@
     <dt class="col-sm-2">Description</dt>
     <dd class="col-sm-10">@Model.Description</dd>
 </dl>
+
+<div v-if="isDeleteConfirmOpen" class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm deletion</h5>
+                <button type="button" class="btn-close" aria-label="Close" v-on:click="closeDeleteConfirm"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">Delete issue: <strong>{{ deleteIssueName }}</strong>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" v-on:click="closeDeleteConfirm">Cancel</button>
+                <button type="button" class="btn btn-danger" v-on:click="submitDelete">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div v-if="isDeleteConfirmOpen" class="modal-backdrop fade show"></div>
+</div>
+
+@section Scripts {
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="~/js/delete-confirm.js" asp-append-version="true"></script>
+    <script>
+        initializeDeleteConfirm("issue-details-app");
+    </script>
+}

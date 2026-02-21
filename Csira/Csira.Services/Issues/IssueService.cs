@@ -50,6 +50,15 @@ public class IssueService(AppDbContext dbContext) : IIssueService
         return MapIssue(issue);
     }
 
+    public async Task<bool> DeleteIssueAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var deletedCount = await dbContext.Issues
+            .Where(x => x.Id == id)
+            .ExecuteDeleteAsync(cancellationToken);
+
+        return deletedCount > 0;
+    }
+
     private static IssueDto MapIssue(IssueEntity issue)
     {
         return new IssueDto

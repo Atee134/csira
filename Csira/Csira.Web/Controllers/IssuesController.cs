@@ -58,4 +58,28 @@ public class IssuesController(IIssueService issueService) : Controller
 
         return View(issue);
     }
+
+    [HttpPost("{id:guid}/delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(
+        Guid id,
+        int? pageNumber,
+        int? pageSize,
+        IssueSortOption? sort,
+        CancellationToken cancellationToken)
+    {
+        await issueService.DeleteIssueAsync(id, cancellationToken);
+
+        if (pageNumber.HasValue || pageSize.HasValue || sort.HasValue)
+        {
+            return RedirectToAction(nameof(Index), new
+            {
+                pageNumber = pageNumber ?? 1,
+                pageSize = pageSize ?? 10,
+                sort = sort ?? IssueSortOption.CreatedAtDesc
+            });
+        }
+
+        return RedirectToAction(nameof(Index));
+    }
 }
